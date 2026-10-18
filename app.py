@@ -19,16 +19,33 @@ from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
-UPLOAD_DIR = INSTANCE_DIR / "uploads"
-DB_PATH = INSTANCE_DIR / "printrunner.sqlite3"
+DATA_DIR = Path(os.environ.get("PRINTRUNNER_DATA_DIR", str(INSTANCE_DIR))).resolve()
+UPLOAD_DIR = DATA_DIR / "uploads"
+DB_PATH = DATA_DIR / "printrunner.sqlite3"
+SECRET_PATH = DATA_DIR / ".session-secret"
 MAX_UPLOAD = 15 * 1024 * 1024
 ALLOWED_FILES = {"pdf", "doc", "docx", "ppt", "pptx", "jpg", "jpeg", "png"}
 ASSETS = {"styles.css", "portal.css", "main.py", "join.py", "staff.js", "backend.js"}
 STATUSES = {"New", "In progress", "Completed"}
 
+def load_secret_key() -> str:
+    configured_key = os.environ.get("PRINTRUNNER_SECRET_KEY")
+    if configured_key:
+        return configured_key
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(SECRET_PATH, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        return SECRET_PATH.read_text(encoding="utf-8").strip()
+    secret = secrets.token_hex(32)
+    with os.fdopen(descriptor, "w", encoding="utf-8") as secret_file:
+        secret_file.write(secret)
+    return secret
+
+
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY=os.environ.get("PRINTRUNNER_SECRET_KEY") or secrets.token_hex(32),
+    SECRET_KEY=load_secret_key(),
     MAX_CONTENT_LENGTH=MAX_UPLOAD + 256 * 1024,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
@@ -155,6 +172,11 @@ def public_asset(asset: str):
 @app.get("/api/csrf")
 def get_csrf():
     return jsonify(token=csrf_token())
+
+
+@app.get("/health")
+def health():
+    return jsonify(status="ok")
 
 
 @app.post("/api/orders")
@@ -330,5 +352,5 @@ if __name__ == "__main__":
     if len(sys.argv) == 3 and sys.argv[1] == "create-staff":
         create_staff(sys.argv[2])
     else:
-        print("Local project mode: use a production WSGI server and a persistent secret key when deploying.")
-        app.run(host="127.0.0.1", port=8000, debug=False)
+        print("Local project mode: set PRINTRUNNER_DATA_DIR and PRINTRUNNER_SECRET_KEY for deployment.")
+        app.run(host="127.0.0.1", port=int(os.environ.get("PORT", "8000")), debug=False)

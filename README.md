@@ -35,8 +35,16 @@ Enter a unique password of at least 12 characters when prompted. Passwords are s
 - The staff portal uses a server-validated login, signed HTTP-only session cookie, CSRF checks, and protected order/file endpoints.
 - Staff can review orders, download an attached file, and update the status to `New`, `In progress`, or `Completed`.
 
+## Deploying on Railway
+
+1. Push the project to GitHub and create a Railway project from the `jomflrsr/PrintRunner` repository on branch `main`.
+2. Set the service build command to `pip install -r requirements.txt` and start command to `gunicorn app:app --bind 0.0.0.0:$PORT --workers 1`.
+3. Add a Railway volume mounted at `/data`, then add service variable `PRINTRUNNER_DATA_DIR=/data`. SQLite data, uploaded files, and the generated session secret are written under this mount.
+4. Generate a staff login from Railway's service shell by running `python app.py create-staff runner` after the first deployment is live.
+5. Generate a public Railway domain and open `/staff.html` to sign in.
+
 ## Deployment notes
 
-This local SQLite setup is for the class project. For a public production launch, use a production WSGI server, a persistent strong `PRINTRUNNER_SECRET_KEY`, HTTPS (set `PRINTRUNNER_COOKIE_SECURE=1`), persistent private storage or object storage for uploads, regular database backups, and operational controls for data retention and account recovery. Do not commit `instance/`, credentials, or customer files. GitHub Pages cannot run this Flask backend; hosting the backend and database requires a Python-capable host.
+The app can generate and save a stable secret key in its data directory; setting `PRINTRUNNER_SECRET_KEY` explicitly is also supported. Enable secure cookies with `PRINTRUNNER_COOKIE_SECURE=1` when the host serves HTTPS. Keep the persistent volume private, configure backups and data retention, and do not commit `instance/`, credentials, or customer files. GitHub Pages cannot run this Flask backend.
 
 The project is educational and has not been hardened for real customer data. Before accepting real orders, the team should review hosting, privacy, data-retention, and account security requirements with its instructor.
