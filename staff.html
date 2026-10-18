@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101d31">
+  <title>Service portal — PrintRunner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="portal.css">
+</head>
+<body class="staff-page">
+  <header class="site-header"><a class="brand" href="index.html#top" aria-label="PrintRunner home"><span class="brand-mark">P<span>R</span></span><span>Print<span class="brand-light">Runner</span></span></a><nav class="nav-links page-nav"><a href="index.html">Customer site</a><a href="join.html">Become a runner</a><a class="nav-cta" href="index.html#order">Order prints <span>↗</span></a></nav></header>
+  <main class="staff-main section-wrap">
+    <div class="staff-banner"><span>STAFF SERVICE PORTAL</span><p>Authorized service staff only. Sign in with an account created by the project administrator.</p></div>
+    <section class="staff-login" id="staff-login-panel"><div class="portal-symbol">PR.</div><div class="eyebrow dark-eyebrow">CREW ACCESS</div><h1>Welcome<br><span>back.</span></h1><p>Sign in with your PrintRunner staff account to open the service order board.</p><form id="staff-login-form"><label class="field-label" for="staff-user">Username</label><input class="text-input" id="staff-user" autocomplete="username" required placeholder="Runner username"><label class="field-label" for="staff-password">Password</label><input class="text-input" id="staff-password" type="password" autocomplete="current-password" required placeholder="Staff password"><button class="button button-primary application-button" type="submit">Open service board <span>↗</span></button><p class="form-feedback" id="login-feedback" role="status" aria-live="polite">Staff accounts are created by the project administrator.</p></form></section>
+    <section class="service-board" id="service-board" hidden><div class="board-top"><div><div class="eyebrow dark-eyebrow">RUNNER WORKSPACE</div><h1>Order <span>board.</span></h1><p>Customer orders saved to the shared PrintRunner service database.</p></div><button class="logout-button" id="staff-logout" type="button">Sign out ↗</button></div><div class="board-stats"><article><span>OPEN ORDERS</span><strong id="open-count">0</strong></article><article><span>IN PROGRESS</span><strong id="progress-count">0</strong></article><article><span>COMPLETED</span><strong id="complete-count">0</strong></article></div><div class="orders-panel"><div class="orders-panel-head"><div><h2>Incoming prints</h2><p>Newest orders appear first. Update the status as you prepare and deliver them.</p></div><button type="button" class="refresh-button" id="refresh-orders">↻ Refresh</button></div><div class="orders-list" id="orders-list"><div class="empty-orders"><span>▤</span><b>No orders yet</b><p>New customer orders will appear here.</p><a href="index.html#order">Go to order form ↗</a></div></div></div><p class="board-footnote">Only signed-in service staff can see order contacts and download attached print files.</p></section>
+  </main>
+  <footer class="site-footer"><div class="section-wrap footer-main"><a class="brand brand-footer" href="index.html"><span class="brand-mark">P<span>R</span></span><span>Print<span class="brand-light">Runner</span></span></a><p>Good prints. Right on time.<br>Made for campus life in Cebu.</p><div class="footer-links"><a href="index.html">Customer site</a><a href="join.html">Become a runner</a></div><a class="back-top" href="#staff-login-panel">BACK TO TOP ↑</a></div><div class="section-wrap footer-bottom"><span>© 2026 PRINT RUNNER · STUDENT PROJECT</span><span>SERVICE PORTAL PREVIEW</span></div></footer>
+  <script src="backend.js"></script><script src="staff.js"></script>
+</body>
+</html>
