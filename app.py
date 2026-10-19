@@ -25,7 +25,11 @@ DB_PATH = DATA_DIR / "printrunner.sqlite3"
 SECRET_PATH = DATA_DIR / ".session-secret"
 MAX_UPLOAD = 15 * 1024 * 1024
 ALLOWED_FILES = {"pdf", "doc", "docx", "ppt", "pptx", "jpg", "jpeg", "png"}
-ASSETS = {"styles.css", "portal.css", "main.py", "join.py", "staff.js", "backend.js"}
+ASSETS = {
+    "styles.css", "portal.css", "main.py", "join.py", "staff.js", "backend.js",
+    "media/printrunner-commercial-fun-v2.mp4",
+    "media/printrunner-commercial-fun-poster.jpg",
+}
 STATUSES = {"New", "In progress", "Completed"}
 
 def load_secret_key() -> str:
@@ -166,7 +170,7 @@ def staff_page():
 def public_asset(asset: str):
     if asset not in ASSETS:
         abort(404)
-    return send_from_directory(BASE_DIR, asset)
+    return send_from_directory(BASE_DIR, asset, conditional=True)
 
 
 @app.get("/api/csrf")
